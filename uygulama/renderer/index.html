@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
+  <title>MacroPad</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-accent="blue" data-theme="dark" data-font="md">
+
+  <!-- ===================== ÜST ÇUBUK ===================== -->
+  <header class="topbar" id="tb">
+    <div class="brand">
+      <div class="logo">M</div>
+      <div class="brand-text">
+        <h1>MacroPad</h1>
+        <p id="hotkey-hint"></p>
+      </div>
+    </div>
+
+    <div class="profile-box" id="profile-box">
+      <label id="lbl-profile"></label>
+      <select id="profile-select"></select>
+      <button class="iconbtn" id="btn-profile-menu" title="…">⋯</button>
+      <div class="menu" id="profile-menu" hidden></div>
+    </div>
+
+    <div class="top-right">
+      <div class="modeswitch" id="modeswitch">
+        <button data-mode="simple" class="on"></button>
+        <button data-mode="advanced"></button>
+      </div>
+      <span class="engine-pill" id="engine-pill"><i></i></span>
+      <button class="iconbtn big" id="btn-settings">⚙</button>
+    </div>
+  </header>
+
+  <!-- ===================== GÖVDE ===================== -->
+  <main class="body" id="body">
+
+    <nav class="rail" id="rail">
+      <div class="rail-head">
+        <span id="lbl-steps"></span><span class="hint" id="step-count"></span>
+      </div>
+      <div class="rail-list" id="rail-list"></div>
+      <div class="rail-foot">
+        <button class="btn ghost wide rec" id="btn-record"></button>
+        <button class="btn ghost wide" id="btn-add"></button>
+        <div class="menu up cats" id="add-menu" hidden></div>
+      </div>
+    </nav>
+
+    <div class="resizer" id="resizer"></div>
+
+    <section class="editor" id="editor"></section>
+  </main>
+
+  <!-- ===================== ALT ÇUBUK ===================== -->
+  <footer class="runbar" id="runbar">
+    <button class="btn primary run" id="btn-start"></button>
+    <button class="btn danger run" id="btn-stop" disabled></button>
+    <div class="runinfo">
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div class="status" id="status"></div>
+    </div>
+    <div class="runcfg" id="runcfg"></div>
+  </footer>
+
+  <!-- ===================== AYARLAR ===================== -->
+  <div class="modal" id="settings" hidden>
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="set-title"></h2>
+        <button class="iconbtn" id="btn-close-settings">✕</button>
+      </div>
+      <div class="modal-body">
+        <nav class="tabs" id="settings-tabs">
+          <button data-tab="keys" class="on"></button>
+          <button data-tab="run"></button>
+          <button data-tab="look"></button>
+          <button data-tab="lang"></button>
+          <button data-tab="engine"></button>
+        </nav>
+        <div class="tabpanes" id="tabpanes"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== KATMANLAR ===================== -->
+  <div class="modal" id="capture-overlay" hidden>
+    <div class="modal-card small">
+      <h3 id="cap-title"></h3>
+      <p class="muted" id="cap-desc"></p>
+      <button class="btn ghost" id="btn-cancel-capture"></button>
+    </div>
+  </div>
+
+  <div class="modal" id="keycap-overlay" hidden>
+    <div class="modal-card small">
+      <h3 id="key-title"></h3>
+      <p class="muted" id="key-desc"></p>
+      <div class="keycap-preview" id="keycap-preview">…</div>
+    </div>
+  </div>
+
+  <div class="modal" id="prompt-overlay" hidden>
+    <div class="modal-card small">
+      <h3 id="prompt-title"></h3>
+      <input type="text" id="prompt-input">
+      <div class="prompt-actions">
+        <button class="btn ghost" id="prompt-cancel"></button>
+        <button class="btn primary" id="prompt-ok"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- dil seçimi (ilk açılış) -->
+  <div class="modal" id="lang-overlay" hidden>
+    <div class="modal-card small lang-card">
+      <div class="logo big">M</div>
+      <h3 id="lang-title"></h3>
+      <p class="muted" id="lang-desc"></p>
+      <div class="lang-list" id="lang-list"></div>
+      <button class="btn primary wide" id="lang-continue"></button>
+    </div>
+  </div>
+
+  <!-- tanıtım turu -->
+  <div class="tut-layer" id="tut" hidden>
+    <div class="tut-hole" id="tut-hole"></div>
+    <div class="tut-card" id="tut-card">
+      <span class="tut-step" id="tut-step"></span>
+      <h3 id="tut-title"></h3>
+      <p id="tut-desc"></p>
+      <div class="tut-actions">
+        <button class="btn ghost tiny" id="tut-skip"></button>
+        <span class="spacer"></span>
+        <button class="btn ghost" id="tut-back"></button>
+        <button class="btn primary" id="tut-next"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- kayıt -->
+  <div class="modal" id="rec-setup" hidden>
+    <div class="modal-card small">
+      <h3 id="rec-title"></h3>
+      <p class="muted" id="rec-desc"></p>
+      <label class="check"><input type="checkbox" id="rec-moves"><span id="rec-moves-l"></span></label>
+      <label class="check"><input type="checkbox" id="rec-delays" checked><span id="rec-delays-l"></span></label>
+      <label class="check"><input type="checkbox" id="rec-replace"><span id="rec-replace-l"></span></label>
+      <div class="prompt-actions">
+        <button class="btn ghost" id="rec-cancel"></button>
+        <button class="btn primary" id="rec-go"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="rec-live" hidden>
+    <div class="modal-card small">
+      <div class="rec-dot" id="rec-dot"></div>
+      <h3 id="rec-live-title"></h3>
+      <p class="muted" id="rec-count"></p>
+      <p class="muted small" id="rec-hint"></p>
+      <button class="btn danger wide" id="rec-stop"></button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden>
+    <span id="toast-text"></span>
+    <button class="btn ghost tiny" id="toast-action"></button>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

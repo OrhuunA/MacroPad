@@ -1,0 +1,20 @@
+# bağımlılıklar
+node_modules/
+__pycache__/
+*.pyc
+
+# derleme çıktıları
+uygulama/dist/
+uygulama/engine/dist/
+uygulama/engine/build/
+uygulama/engine/*.spec
+dist/
+
+# günlükler
+*.log
+kurulum.log
+derleme.log
+
+# işletim sistemi
+Thumbs.db
+.DS_Store

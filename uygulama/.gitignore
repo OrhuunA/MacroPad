@@ -1,0 +1,7 @@
+node_modules/
+dist/
+engine/dist/
+engine/build/
+engine/*.spec
+__pycache__/
+*.pyc

@@ -1,0 +1,60 @@
+{
+  "name": "macropad",
+  "version": "1.0.0",
+  "description": "Klavye ve fare makro uygulamasi (Electron arayuz + Python motor)",
+  "main": "main.js",
+  "author": "Orhun",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "engine": "pyinstaller --noconfirm --onefile --name macropad-engine --distpath engine/dist --workpath engine/build --specpath engine engine/engine.py",
+    "dist": "electron-builder --win --publish never"
+  },
+  "devDependencies": {
+    "electron": "^32.2.7",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.orhun.macropad",
+    "productName": "MacroPad",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "build/icon.ico"
+    ],
+    "extraResources": [
+      {
+        "from": "engine/dist/macropad-engine.exe",
+        "to": "engine/macropad-engine.exe"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "MacroPad",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "createDesktopShortcut": true,
+      "artifactName": "MacroPad-Kurulum-${version}.exe"
+    },
+    "portable": {
+      "artifactName": "MacroPad-Tasinabilir-${version}.exe"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OrhuunA/MacroPad.git"
+  },
+  "homepage": "https://github.com/OrhuunA/MacroPad",
+  "bugs": {
+    "url": "https://github.com/OrhuunA/MacroPad/issues"
+  }
+}
