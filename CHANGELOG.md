@@ -3,6 +3,18 @@
 Sürüm numaraları uygulamanın kendisine, "motor" satırı ise arayüz ile Python
 motoru arasındaki protokol sürümüne aittir.
 
+## 1.0.1
+
+### Düzeltmeler
+- **Klavye adımları Windows'ta çöküyordu** (`expected LP_INPUT instance`).
+  Fare için eklenen `SendInput` kodu `ctypes.windll.user32` üzerinde imza
+  ayarlıyordu; bu nesne paylaşımlı olduğu için pynput'un klavye çağrıları da
+  bozuluyordu. Artık ayrı bir DLL örneği kullanılıyor ve hiçbir imza
+  değiştirilmiyor.
+- Tuş ve fare düğmesi basma/bırakma işlemleri `finally` ile korundu; bir hata
+  olsa bile tuş basılı kalmıyor.
+- Motor protokolü 8'e yükseldi.
+
 ## 1.0.0
 
 İlk yayın.

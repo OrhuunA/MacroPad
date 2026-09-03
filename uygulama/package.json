@@ -1,6 +1,6 @@
 {
   "name": "macropad",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Klavye ve fare makro uygulamasi (Electron arayuz + Python motor)",
   "main": "main.js",
   "author": "Orhun",

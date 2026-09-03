@@ -50,7 +50,7 @@ except AttributeError:                                   # Python < 3.7
 
 # Protokol surumu. Arayuz bunu kontrol eder: eski bir motor (ornegin
 # klasorde kalmis bayat macropad-engine.exe) bulunursa atlanir.
-ENGINE_VERSION = 7
+ENGINE_VERSION = 8
 FEATURES = ["text", "click", "move", "scroll", "delay", "key", "combo",
             "piano", "hotkeys", "bindings", "mouse_triggers", "hold",
             "record", "window"]
@@ -153,10 +153,14 @@ class WinMouse(object):
             self.ctypes = ctypes
             self.INPUT = INPUT
             self.MOUSEINPUT = MOUSEINPUT
-            self.user32 = ctypes.windll.user32
-            self.user32.SendInput.argtypes = (wintypes.UINT,
-                                              ctypes.POINTER(INPUT), ctypes.c_int)
-            self.user32.SendInput.restype = wintypes.UINT
+
+            # DIKKAT: ctypes.windll.user32 PAYLASILAN bir nesnedir; pynput da
+            # ayni SendInput fonksiyonunu kullanir. Uzerinde argtypes
+            # ayarlarsak pynput'un kendi INPUT yapisi artik uymaz ve
+            # klavye "expected LP_INPUT instance" hatasiyla coker.
+            # Bu yuzden kendi ozel DLL ornegimizi aciyor ve hicbir
+            # imzayi degistirmiyoruz.
+            self.user32 = ctypes.WinDLL("user32", use_last_error=True)
             self.ok = True
         except Exception:                                # noqa: BLE001
             self.ok = False
@@ -267,9 +271,13 @@ class Engine(object):
     def _tap(self, key, hold=None):
         h = DEFAULT_HOLD if hold is None else max(0.0, hold)
         self.kb.press(key)
-        if h:
-            time.sleep(h)
-        self.kb.release(key)
+        try:
+            if h:
+                time.sleep(h)
+        finally:
+            # basma ile birakma arasinda bir sey ters giderse tus basili
+            # kalmasin - takili bir Ctrl/Shift her seyi bozar
+            self.kb.release(key)
 
     # ---------------- adim tipleri ----------------
     def _do_text(self, st):
@@ -356,14 +364,18 @@ class Engine(object):
 
     def _press_button(self, bname, btn, hold):
         if WINMOUSE.ok and WINMOUSE.button(bname, True):
-            if hold:
-                time.sleep(hold)
-            WINMOUSE.button(bname, False)
+            try:
+                if hold:
+                    time.sleep(hold)
+            finally:
+                WINMOUSE.button(bname, False)
             return
         self.ms.press(btn)
-        if hold:
-            time.sleep(hold)
-        self.ms.release(btn)
+        try:
+            if hold:
+                time.sleep(hold)
+        finally:
+            self.ms.release(btn)
 
     def _do_move(self, st):
         self._move_to(int(st.get("x", 0)), int(st.get("y", 0)))

@@ -37,7 +37,7 @@ let win = null;
 let engine = null;
 let engineReady = false;
 let rendererReady = false;
-const REQUIRED_ENGINE = 7;   // bundan eski motorlar kabul edilmez
+const REQUIRED_ENGINE = 8;   // bundan eski motorlar kabul edilmez
 let lastFatal = null;
 let pending = [];              // arayuz yuklenmeden gelen olaylar burada bekler
 
